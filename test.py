@@ -1,69 +1,40 @@
+from typing import List
+
 class Solution:
-    def maxDifference(self, s: str, k: int) -> int:
-        def status(a, b):   
-            return (a & 1) << 1 | (b & 1)  # tạo bitmask từ parity (even/odd) của a và b
+    def minimizeMax(self, nums: List[int], p: int) -> int:
+        nums.sort()  # Bước 1: Sắp xếp để độ chênh lệch nhỏ nằm gần nhau
+        print(f"Sorted nums: {nums}")
+        def can_form_p_pairs(max_diff):
+            count = 0
+            i = 0
+            while i < len(nums) - 1:
+                print(f"count: {count}, i: {i}, checking pair: ({nums[i]}, {nums[i + 1]}) with max_diff: {max_diff}")
+                if nums[i + 1] - nums[i] <= max_diff:
+                    count += 1
+                    i += 2  # bỏ cả 2 phần tử vì mỗi phần tử chỉ dùng 1 lần
+                else:
+                    i += 1  # không ghép được thì chỉ bỏ 1 phần tử
+            print(f"Total pairs formed: {count}")
+            return count >= p
 
-        ans = float('-inf')
-        n = len(s)
+        # Bước 2: Tìm kiếm nhị phân trên đáp án
+        left, right = 0, nums[-1] - nums[0]
+        print(f"Initial left: {left}, right: {right}")
+        answer = right
 
-        for ca in '01234':
-            for cb in '01234':
-                if ca == cb:
-                    continue
-                print(f"\n=== 🔍 Xét cặp (a='{ca}', b='{cb}') ===")
-                
-                best = [float('inf')] * 4  # best[bitmask] = min(prev_a - prev_b)
-                cnt_a = cnt_b = prev_a = prev_b = 0
-                left = -1
-                for right in range(n):
-                    if s[right] == ca:
-                        cnt_a += 1
-                    if s[right] == cb:
-                        cnt_b += 1
-                    
-                    # Debug khi mở rộng cửa sổ
-                    print(f"[→]left={left}, right={right}, s[right]={s[right]}, cnt_a={cnt_a}, cnt_b={cnt_b}")
+        while left <= right:
+            mid = (left + right) // 2
+            print(f"Current left: {left}, right: {right}", f", mid: {mid}")
+            
+            if can_form_p_pairs(mid):
+                answer = mid
+                right = mid - 1  # thử tìm giá trị nhỏ hơn
+            else:
+                left = mid + 1  # phải tăng độ chênh lệch lên
 
-                    # Rút gọn cửa sổ nếu đủ dài và đủ b
-                    while right - left >= k and (cnt_b - prev_b) >= 2:
-                        
-                        st = status(prev_a, prev_b)
-                        old_best = best[st]
-                        best[st] = min(best[st], prev_a - prev_b)
-                        if best[st] != old_best:
-                            print(f"    💾 best[{st}] cập nhật: {best[st]} (parity a={prev_a%2}, b={prev_b%2})")
+        return answer
 
-                        left += 1
-                        if s[left] == ca:
-                            prev_a += 1
-                        if s[left] == cb:
-                            prev_b += 1
-                        print(f"    🔁 Shrink left={left}, prev_a={prev_a}, prev_b={prev_b}")
-
-                    # Cập nhật kết quả nếu tìm thấy trạng thái đối xứng
-                    st2 = status(cnt_a, cnt_b)
-                    target = st2 ^ 2  # đối xứng bit 1 của `a`
-
-                    if best[target] < float('inf'):
-                        current_score = cnt_a - cnt_b - best[target]
-                        if current_score > ans:
-                            print(f"✅ Update ans: {current_score} (cnt_a={cnt_a}, cnt_b={cnt_b}, best[{target}]={best[target]})")
-                        ans = max(ans, current_score)
-
-        print("\n🎯 Kết quả cuối cùng:")
-        return ans if ans != float('-inf') else -1
-
-
-# =============================
-# 🚀 Test cases
-# =============================
-sol = Solution()
-
-test_cases = [
-    ("12042103", 3),
-]
-
-for i, (s, k) in enumerate(test_cases, 1):
-    print(f"\n🧪 Test case {i}: s = '{s}', k = {k}'")
-    result = sol.maxDifference(s, k)
-    print(f"➡️  Output = {result}")
+nums = [1,5,2,3]
+p = 2
+solution = Solution()
+print(solution.minimizeMax(nums, p))  # Output: 1
