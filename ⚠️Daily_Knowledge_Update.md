@@ -3,7 +3,7 @@
 ## How to Use This Document
 
 * Tick the box when you finish a sub‑topic.
-* Copy the **Prompt Template** below and replace `<<TOPIC>>` with the item you’re studying.
+* Copy the **Prompt Template** below and replace `<<TOPIC>>` with the item you’re studying.  
 
 ---
 
@@ -46,7 +46,7 @@ Hãy giúp tôi học chủ đề **`<<TOPIC>>`** theo đúng format:
 ### 1. Foundation
 
 * [x] Big‑O notation
-* [ ] Arrays & Lists (prefix sum, sliding window)
+* [x] Arrays & Lists (prefix sum, sliding window)
 * [ ] Strings (pattern matching, hashing)
 * [ ] Hash Table (dict/set)
 * [ ] Two Pointers
